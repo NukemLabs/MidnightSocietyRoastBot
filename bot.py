@@ -2,6 +2,7 @@ import os
 import re
 import sqlite3
 import asyncio
+import shutil
 import random
 import time
 from datetime import datetime, timezone, timedelta
@@ -20,8 +21,39 @@ from google.genai import types
 # UNHINGED EDITION
 # ============================================================
 
-VERSION = "4.3"
-DATABASE_FILE = "roastbot.db"
+VERSION = "4.4"
+# ============================================================
+# PERSISTENT DATABASE STORAGE
+# ============================================================
+# Railway provides RAILWAY_VOLUME_MOUNT_PATH when a Volume is
+# attached. Locally, the bot continues using roastbot.db.
+#
+# On the first Railway startup after attaching the Volume,
+# copy the existing ephemeral database into the persistent
+# Volume so existing settings/history are preserved.
+# ============================================================
+
+LEGACY_DATABASE_FILE = "roastbot.db"
+RAILWAY_VOLUME_PATH = os.getenv("RAILWAY_VOLUME_MOUNT_PATH")
+
+if RAILWAY_VOLUME_PATH:
+    DATA_DIR = RAILWAY_VOLUME_PATH
+    os.makedirs(DATA_DIR, exist_ok=True)
+
+    DATABASE_FILE = os.path.join(DATA_DIR, "roastbot.db")
+
+    if (
+        not os.path.exists(DATABASE_FILE)
+        and os.path.exists(LEGACY_DATABASE_FILE)
+    ):
+        shutil.copy2(LEGACY_DATABASE_FILE, DATABASE_FILE)
+        print(
+            f"Copied existing database to persistent volume: "
+            f"{DATABASE_FILE}"
+        )
+else:
+    DATA_DIR = "."
+    DATABASE_FILE = LEGACY_DATABASE_FILE
 
 DEFAULT_INTERVAL_MINUTES = 10
 DEFAULT_ROAST_CHANCE = 100
@@ -1868,7 +1900,7 @@ if __name__ == "__main__":
 
     print()
     print(
-        "Starting Midnight Society RoastBot 4.3..."
+        "Starting Midnight Society RoastBot 4.4..."
     )
     print()
 
