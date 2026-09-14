@@ -6,7 +6,7 @@ Nukem RoastBot is an AI-powered Discord bot built for friend groups who can take
 
 Built by **NukemLabs**.
 
-## 💀 Features
+## Features
 
 - ☠️ AI-generated savage roasts
 - 🤖 Automatic server roasting
@@ -19,7 +19,7 @@ Built by **NukemLabs**.
 - 💾 Persistent SQLite database
 - ⚡ Discord slash commands
 
-## 🔥 Commands
+## Commands
 
 `/roast @user` — Roast a member
 
@@ -41,7 +41,7 @@ Built by **NukemLabs**.
 - Discord Bot
 - Google Gemini API key
 
-## 🚀 Setup
+##  Setup
 
 1. Download or clone this repository.
 
