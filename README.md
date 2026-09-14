@@ -8,16 +8,16 @@ Built by **NukemLabs**.
 
 ## Features
 
-- ☠️ AI-generated savage roasts
-- 🤖 Automatic server roasting
-- 🎯 Random member selection
-- ⏱️ Adjustable roast interval
-- 🎲 Adjustable roast chance
-- 🧊 User cooldowns
-- 📢 Dedicated roast channel
-- 🧠 Google Gemini AI
-- 💾 Persistent SQLite database
-- ⚡ Discord slash commands
+- AI-generated savage roasts
+- Automatic server roasting
+- Random member selection
+- Adjustable roast interval
+- Adjustable roast chance
+- User cooldowns
+- Dedicated roast channel
+- Google Gemini AI
+- Persistent SQLite database
+- Discord slash commands
 
 ## Commands
 
