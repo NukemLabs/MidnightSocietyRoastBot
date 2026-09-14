@@ -35,7 +35,7 @@ Built by **NukemLabs**.
 
 `/roastcooldown <minutes>` — Set the user cooldown
 
-## 🛠️ Requirements
+## Requirements
 
 - Python 3
 - Discord Bot
