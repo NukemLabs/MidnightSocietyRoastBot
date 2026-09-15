@@ -1,29 +1,27 @@
-# ☢️ Nukem RoastBot
+# ☠️ Midnight Society RoastBot
 
 **The server bully you didn't ask for.**
 
-Nukem RoastBot is an AI-powered Discord bot built for friend groups who can take a joke. It brings savage roasts, dark humor, profanity, and automatic chaos straight into your server.
+An AI-powered Discord bot that brings savage roasts, dark humor, profanity, and chaos to your server.
 
 Built by **NukemLabs**.
 
-## Features
+## 🔥 Features
 
-- AI-generated savage roasts
-- Automatic server roasting
-- Random member selection
-- Adjustable roast interval
-- Adjustable roast chance
-- User cooldowns
-- Dedicated roast channel
-- Google Gemini AI
-- Persistent SQLite database
-- Discord slash commands
+- ☠️ AI-generated roasts
+- 🤖 Automatic server roasting
+- 🎯 Random member selection
+- ⏱️ Adjustable roast interval
+- 🎲 Adjustable roast chance
+- 🧊 User cooldowns
+- 📢 Dedicated roast channel
+- 🧠 Google Gemini AI
+- 💾 SQLite database
+- ⚡ Discord slash commands
 
-## Commands
+## 💀 Commands
 
 `/roast @user` — Roast a member
-
-`/roastme` — Roast yourself
 
 `/roastchannel #channel` — Set the automatic roast channel
 
@@ -35,17 +33,16 @@ Built by **NukemLabs**.
 
 `/roastcooldown <minutes>` — Set the user cooldown
 
-## Requirements
+## 🛠️ Requirements
 
-- Python 3
+- Python
 - Discord Bot
 - Google Gemini API key
 
-##  Setup
+## 🔧 Setup
 
-1. Download or clone this repository.
-
-2. Install the required packages:
+Create a `.env` file containing:
 
 ```text
-pip install -r requirements.txt
+DISCORD_TOKEN=your_discord_bot_token
+GEMINI_API_KEY=your_gemini_api_key

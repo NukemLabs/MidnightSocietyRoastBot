@@ -17,20 +17,15 @@ from google.genai import types
 
 
 # ============================================================
-# MIDNIGHT SOCIETY ROASTBOT 4.3
+# NUKEM ROASTBOT 4.4
 # UNHINGED EDITION
 # ============================================================
 
 VERSION = "4.4"
+
+
 # ============================================================
 # PERSISTENT DATABASE STORAGE
-# ============================================================
-# Railway provides RAILWAY_VOLUME_MOUNT_PATH when a Volume is
-# attached. Locally, the bot continues using roastbot.db.
-#
-# On the first Railway startup after attaching the Volume,
-# copy the existing ephemeral database into the persistent
-# Volume so existing settings/history are preserved.
 # ============================================================
 
 LEGACY_DATABASE_FILE = "roastbot.db"
@@ -54,6 +49,7 @@ if RAILWAY_VOLUME_PATH:
 else:
     DATA_DIR = "."
     DATABASE_FILE = LEGACY_DATABASE_FILE
+
 
 DEFAULT_INTERVAL_MINUTES = 10
 DEFAULT_ROAST_CHANCE = 100
@@ -86,7 +82,7 @@ gemini_client = genai.Client(api_key=GEMINI_API_KEY)
 
 
 ROAST_SYSTEM_PROMPT = """
-You are Midnight Society RoastBot, the server's resident asshole.
+You are Nukem RoastBot, the server's resident asshole.
 
 You roast members of a private adult-friend Discord server.
 
@@ -155,7 +151,8 @@ STYLE:
    Do not recycle the same punchline, metaphor, or sentence structure.
 
 8. DARK HUMOR IS ALLOWED.
-   Clearly fictional and absurd jokes about someone's terrible fate, getting eaten by a bear, being launched into space, etc. are acceptable.
+   Clearly fictional and absurd jokes about someone's terrible fate,
+   getting eaten by a bear, being launched into space, etc. are acceptable.
 
 9. NEVER USE:
    - Racism
@@ -282,10 +279,6 @@ def init_database():
         )
     """)
 
-    # --------------------------------------------------------
-    # Safely upgrade older roast_history databases
-    # --------------------------------------------------------
-
     cursor.execute("PRAGMA table_info(roast_history)")
 
     existing_columns = {
@@ -321,10 +314,6 @@ def init_database():
                 cursor.execute(sql)
             except sqlite3.OperationalError:
                 pass
-
-    # --------------------------------------------------------
-    # Safely upgrade older guild_settings databases
-    # --------------------------------------------------------
 
     cursor.execute("PRAGMA table_info(guild_settings)")
 
@@ -369,10 +358,6 @@ def init_database():
                 cursor.execute(sql)
             except sqlite3.OperationalError:
                 pass
-
-    # --------------------------------------------------------
-    # Fill migrated data
-    # --------------------------------------------------------
 
     try:
         cursor.execute("""
@@ -600,7 +585,6 @@ def clean_roast_output(text, target_name):
         return None
 
     text = text.strip()
-
     text = text.replace("```", "")
 
     prefixes = [
@@ -616,13 +600,9 @@ def clean_roast_output(text, target_name):
         if text.lower().startswith(prefix.lower()):
             text = text[len(prefix):].strip()
 
-    # Remove accidental Discord mentions
     text = re.sub(r"<@!?\d+>", "", text)
-
-    # Normalize whitespace
     text = re.sub(r"\s+", " ", text).strip()
 
-    # Remove surrounding quotation marks
     if len(text) >= 2:
         if (
             (text.startswith('"') and text.endswith('"'))
@@ -718,7 +698,6 @@ Do not use quotation marks.
         except Exception as exc:
 
             last_error = exc
-
             error_text = str(exc).upper()
 
             if (
@@ -780,16 +759,19 @@ bot = commands.Bot(
 # EMBEDS
 # ============================================================
 
+NUKEM_YELLOW = discord.Color.from_rgb(255, 204, 0)
+
+
 def manual_roast_embed(member, roast):
 
     embed = discord.Embed(
-        title="☠️ YOU ASKED FOR THIS ☠️",
+        title="☢️ YOU ASKED FOR THIS ☢️",
         description=f"{member.mention}, {roast}",
-        color=discord.Color.dark_red()
+        color=NUKEM_YELLOW
     )
 
     embed.set_footer(
-        text="Midnight Society • No refunds."
+        text="NukemLabs • We regret nothing."
     )
 
     return embed
@@ -798,13 +780,13 @@ def manual_roast_embed(member, roast):
 def automatic_roast_embed(member, roast):
 
     embed = discord.Embed(
-        title="☠️ TONIGHT'S SACRIFICE HAS BEEN CHOSEN ☠️",
+        title="☢️ TARGET ACQUIRED ☢️",
         description=f"{member.mention}, {roast}",
-        color=discord.Color.dark_red()
+        color=NUKEM_YELLOW
     )
 
     embed.set_footer(
-        text="Midnight Society • The Council is always watching."
+        text="NukemLabs • We regret nothing."
     )
 
     return embed
@@ -819,7 +801,7 @@ async def on_ready():
 
     print()
     print("=" * 60)
-    print(f"MIDNIGHT SOCIETY ROASTBOT {VERSION}")
+    print(f"NUKEM ROASTBOT {VERSION}")
     print("UNHINGED EDITION")
     print("=" * 60)
 
@@ -827,24 +809,21 @@ async def on_ready():
     print(f"Connected to {len(bot.guilds)} server(s)")
     print(f"Database: {os.path.abspath(DATABASE_FILE)}")
     print(f"Gemini model: {GEMINI_MODEL}")
+
     print(
         f"Default bully interval: "
         f"{DEFAULT_INTERVAL_MINUTES} minutes"
     )
+
     print(
         f"Default roast chance: "
         f"{DEFAULT_ROAST_CHANCE}%"
     )
+
     print(
         f"Default user cooldown: "
         f"{DEFAULT_COOLDOWN_MINUTES} minutes"
     )
-
-    # --------------------------------------------------------
-    # IMPORTANT:
-    # Sync commands directly to every connected server.
-    # This fixes Discord's stale /roastbully signature.
-    # --------------------------------------------------------
 
     try:
 
@@ -1005,7 +984,6 @@ async def automatic_bully_loop():
                 next_time.isoformat()
             )
 
-            # Chance roll
             if random.randint(1, 100) > chance:
                 continue
 
@@ -1052,8 +1030,6 @@ async def automatic_bully_loop():
 
                 candidates.append(member)
 
-            # If needed, allow the previous target
-            # rather than having nobody to roast.
             if not candidates:
 
                 for member in members:
@@ -1391,7 +1367,7 @@ async def slash_roastbully(
         )
 
         message = (
-            "☠️ **SERVER BULLY: ONLINE**\n"
+            "☢️ **SERVER BULLY: ONLINE**\n"
             "The Council has resumed its bullshit."
         )
 
@@ -1444,15 +1420,15 @@ async def slash_roaststatus(
         channel_text = "Not configured"
 
     bully_status = (
-        "☠️ ONLINE"
+        "☢️ ONLINE"
         if settings["bully_enabled"]
         else "😇 OFFLINE"
     )
 
     embed = discord.Embed(
-        title="☠️ MIDNIGHT SOCIETY ROASTBOT",
+        title="☢️ NUKEM ROASTBOT",
         description="**SERVER BULLY STATUS**",
-        color=discord.Color.dark_red()
+        color=NUKEM_YELLOW
     )
 
     embed.add_field(
@@ -1492,7 +1468,7 @@ async def slash_roaststatus(
     )
 
     embed.set_footer(
-        text=f"Midnight Society RoastBot {VERSION} • Unhinged Edition"
+        text=f"NukemLabs • We regret nothing. • v{VERSION}"
     )
 
     await interaction.response.send_message(
@@ -1790,7 +1766,7 @@ async def prefix_roastbully(
         )
 
         await ctx.send(
-            "☠️ **SERVER BULLY: ONLINE**\n"
+            "☢️ **SERVER BULLY: ONLINE**\n"
             "The Council has resumed its bullshit."
         )
 
@@ -1834,15 +1810,15 @@ async def prefix_roaststatus(ctx):
         channel_text = "Not configured"
 
     bully_status = (
-        "☠️ ONLINE"
+        "☢️ ONLINE"
         if settings["bully_enabled"]
         else "😇 OFFLINE"
     )
 
     embed = discord.Embed(
-        title="☠️ MIDNIGHT SOCIETY ROASTBOT",
+        title="☢️ NUKEM ROASTBOT",
         description="**SERVER BULLY STATUS**",
-        color=discord.Color.dark_red()
+        color=NUKEM_YELLOW
     )
 
     embed.add_field(
@@ -1882,7 +1858,7 @@ async def prefix_roaststatus(ctx):
     )
 
     embed.set_footer(
-        text=f"Midnight Society RoastBot {VERSION} • Unhinged Edition"
+        text=f"NukemLabs • We regret nothing. • v{VERSION}"
     )
 
     await ctx.send(
@@ -1900,7 +1876,7 @@ if __name__ == "__main__":
 
     print()
     print(
-        "Starting Midnight Society RoastBot 4.4..."
+        "Starting Nukem RoastBot 4.4..."
     )
     print()
 
